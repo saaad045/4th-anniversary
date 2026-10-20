@@ -1,0 +1,1153 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Four Years, Still You · 21 · 10 · 2022</title>
+    <meta name="description" content="A private anniversary story: from best friends to four years together.">
+    <meta name="theme-color" content="#09090D">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Four Years, Still You">
+    <meta property="og:description" content="A private anniversary story.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Manrope:wght@300;400;500&display=swap">
+    <!--
+  FOUR YEARS, STILL YOU · SETUP
+  1. Edit all personal text in the CONFIG block at the top of the script: names, dates, friendship memories,
+     chapters, keepsake cards, the letter, the secret note and the final message.
+  2. Open index.html in a modern browser. Internet access is needed for fonts and GSAP.
+  The counter counts from the start date in local time and updates itself before and after each anniversary.
+-->
+    <style>
+        :root {
+            --ob: #09090D;
+            --bu: #35121F;
+            --wi: #641E35;
+            --go: #D8B98A;
+            --iv: #F5EFE8;
+            --ro: #B98291;
+            --se: "Cormorant Garamond", Georgia, serif;
+            --sa: Manrope, Inter, system-ui, sans-serif
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            background: var(--ob)
+        }
+
+        body {
+            background: var(--ob);
+            color: var(--iv);
+            font: 300 16px/1.7 var(--sa);
+            overflow-x: hidden
+        }
+
+        body.locked {
+            overflow: hidden
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -20%;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(40vmax 40vmax at 14% 18%, rgba(100, 30, 53, .5), transparent 70%), radial-gradient(34vmax 34vmax at 88% 78%, rgba(216, 185, 138, .12), transparent 70%)
+        }
+
+        section {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            min-height: 100svh;
+            padding: 14vh 0;
+            display: flex;
+            align-items: center;
+            overflow: hidden
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: var(--se);
+            font-weight: 300;
+            line-height: 1.02
+        }
+
+        h2 {
+            font-size: clamp(2.6rem, 7vw, 5.6rem);
+            margin-bottom: .4em
+        }
+
+        em {
+            font-style: italic;
+            color: var(--go)
+        }
+
+        button {
+            font: inherit;
+            color: inherit
+        }
+
+        img {
+            display: block;
+            max-width: 100%
+        }
+
+        .wrap {
+            width: min(1080px, 88vw);
+            margin: 0 auto
+        }
+
+        .c {
+            text-align: center
+        }
+
+        .w {
+            display: inline-block
+        }
+
+        .eyebrow {
+            font: 500 11px/1 var(--sa);
+            letter-spacing: .32em;
+            text-transform: uppercase;
+            color: var(--go);
+            margin-bottom: 22px
+        }
+
+        .small {
+            font-size: 13px;
+            letter-spacing: .06em;
+            color: var(--ro)
+        }
+
+        #intro {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: grid;
+            place-items: center;
+            padding: 6vh 8vw;
+            text-align: center;
+            background: radial-gradient(60vmax 60vmax at 50% 45%, var(--bu), var(--ob) 70%)
+        }
+
+        #intro p {
+            font: 300 clamp(1.7rem, 4.6vw, 3.4rem)/1.15 var(--se)
+        }
+
+        #i1 {
+            font-style: italic;
+            font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+            color: var(--ro)
+        }
+
+        #i3 {
+            font: 300 clamp(.95rem, 1.6vw, 1.1rem)/1.7 var(--sa);
+            color: rgba(245, 239, 232, .72);
+            max-width: 34ch;
+            margin: 1.4rem auto 2.6rem
+        }
+
+        .btn {
+            font: 500 12px/1 var(--sa);
+            letter-spacing: .3em;
+            color: var(--go);
+            background: none;
+            border: 1px solid rgba(216, 185, 138, .5);
+            padding: 18px 30px;
+            cursor: pointer;
+            transition: background .6s, color .6s
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+            background: var(--go);
+            color: var(--ob);
+            outline: none
+        }
+
+        #hero {
+            flex-direction: column;
+            justify-content: center;
+            text-align: center
+        }
+
+        .date {
+            font: 300 clamp(1.1rem, 3vw, 2rem) var(--se);
+            letter-spacing: .4em;
+            color: var(--go)
+        }
+
+        .h-big {
+            font-size: clamp(3rem, 10vw, 8.5rem);
+            margin: .3em 0 .5em
+        }
+
+        .lede {
+            max-width: 44ch;
+            margin: 0 auto;
+            color: rgba(245, 239, 232, .8)
+        }
+
+        .counter {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: clamp(14px, 4vw, 46px);
+            margin: 6vh 0 3vh
+        }
+
+        .counter b {
+            display: block;
+            font: 300 clamp(2.3rem, 6vw, 4.4rem)/1 var(--se)
+        }
+
+        .counter span {
+            font: 500 10px/1 var(--sa);
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--ro)
+        }
+
+        #friend {
+            background: linear-gradient(180deg, #0e0b11, #14080e)
+        }
+
+        .shift {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            opacity: 0;
+            pointer-events: none;
+            background: linear-gradient(160deg, var(--bu), var(--wi) 62%, rgba(216, 185, 138, .1))
+        }
+
+        .big {
+            font: italic 300 clamp(1.8rem, 4vw, 3.2rem)/1.2 var(--se);
+            margin-bottom: 9vh
+        }
+
+        .fr {
+            max-width: 520px;
+            padding: 3vh 0;
+            border-top: 1px solid rgba(216, 185, 138, .18)
+        }
+
+        .fr:nth-child(even) {
+            margin-left: auto
+        }
+
+        .fr h3 {
+            font-size: clamp(1.6rem, 3vw, 2.3rem);
+            font-style: italic;
+            margin-bottom: .4em
+        }
+
+        .fr p,
+        .ch p,
+        .paper p {
+            color: rgba(245, 239, 232, .8)
+        }
+
+        #moment {
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(50vmax 50vmax at 50% 50%, rgba(100, 30, 53, .55), transparent 70%)
+        }
+
+        .m-date {
+            font: 300 clamp(2.6rem, 9vw, 7rem)/1 var(--se);
+            letter-spacing: .06em
+        }
+
+        .m-line {
+            font: italic 300 clamp(1.4rem, 3vw, 2.4rem)/1.3 var(--se);
+            color: var(--go);
+            max-width: 24ch;
+            margin: 3vh auto 0
+        }
+
+        .ch {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6vw;
+            align-items: center;
+            padding: 11vh 0;
+            border-top: 1px solid rgba(216, 185, 138, .14)
+        }
+
+        .ch:nth-of-type(even) .ch-img {
+            order: -1
+        }
+
+        .num {
+            display: block;
+            font: 300 clamp(5rem, 16vw, 12rem)/.8 var(--se);
+            color: rgba(216, 185, 138, .22)
+        }
+
+        .ch h3 {
+            font-size: clamp(2rem, 5vw, 3.6rem);
+            margin: .2em 0 .3em
+        }
+
+        .yrs {
+            font: 500 11px/1 var(--sa);
+            letter-spacing: .24em;
+            text-transform: uppercase;
+            color: var(--ro);
+            margin-bottom: 1em
+        }
+
+        .ch-img {
+            position: relative;
+            aspect-ratio: 4/5;
+            overflow: hidden
+        }
+
+        .ch-img .ph {
+            position: absolute;
+            inset: 0
+        }
+
+        .ph {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border: 0;
+            padding: 0;
+            background: radial-gradient(70% 70% at 30% 20%, #3a1424, #15090f 75%)
+        }
+
+        .ph img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.4s cubic-bezier(.2, .7, .2, 1)
+        }
+
+        .ph.empty img {
+            display: none
+        }
+
+        .ph.empty::after {
+            content: attr(data-ph);
+            position: absolute;
+            inset: 10px;
+            display: grid;
+            place-items: center;
+            padding: 1rem;
+            text-align: center;
+            font: 500 11px/1.7 var(--sa);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--go);
+            border: 1px solid rgba(216, 185, 138, .25);
+            opacity: .8
+        }
+
+        /* ---- Tiny Things We Keep (keepsake cards) ---- */
+        #keepsakes {
+            background: radial-gradient(60vmax 45vmax at 50% 0%, rgba(100, 30, 53, .35), transparent 70%)
+        }
+
+        .keep {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: clamp(16px, 2.6vw, 28px);
+            margin-top: 7vh
+        }
+
+        .kp {
+            display: block;
+            width: 100%;
+            min-height: 260px;
+            padding: 46px 26px 30px;
+            text-align: center;
+            cursor: pointer;
+            background: linear-gradient(170deg, rgba(53, 18, 31, .7), rgba(9, 9, 13, .9));
+            border: 1px solid rgba(216, 185, 138, .22);
+            border-radius: 999px 999px 18px 18px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+            transition: transform .7s cubic-bezier(.2, .7, .2, 1), border-color .6s, background .6s
+        }
+
+        .kp:hover,
+        .kp:focus-visible {
+            transform: translateY(-6px);
+            border-color: var(--go);
+            outline: none
+        }
+
+        .kp.open {
+            background: linear-gradient(170deg, rgba(100, 30, 53, .75), rgba(20, 8, 14, .95))
+        }
+
+        .kp-e {
+            display: block;
+            font-size: 2.2rem;
+            line-height: 1;
+            margin-bottom: 18px
+        }
+
+        .kp-t {
+            display: block;
+            font: italic 300 clamp(1.4rem, 2.4vw, 1.75rem)/1.2 var(--se);
+            color: var(--go)
+        }
+
+        .kp-b {
+            display: none;
+            margin-top: 6px;
+            font: 300 15px/1.75 var(--sa);
+            color: rgba(245, 239, 232, .86)
+        }
+
+        .kp.open .kp-h {
+            display: none
+        }
+
+        .kp.open .kp-b {
+            display: block;
+            animation: rise .9s cubic-bezier(.2, .7, .2, 1) both
+        }
+
+        .kp-hint {
+            margin-top: 6vh;
+            font: 500 10px/1 var(--sa);
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--ro)
+        }
+
+        .paper {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: clamp(28px, 6vw, 70px);
+            border: 1px solid rgba(216, 185, 138, .22);
+            background: linear-gradient(180deg, rgba(53, 18, 31, .55), rgba(9, 9, 13, .75));
+            box-shadow: 0 40px 120px rgba(0, 0, 0, .6)
+        }
+
+        .paper p {
+            font: 400 clamp(1.05rem, 1.8vw, 1.2rem)/1.85 var(--se);
+            margin-bottom: 1.1em
+        }
+
+        .paper .open {
+            font-size: clamp(1.35rem, 3vw, 2rem);
+            font-style: italic;
+            color: var(--go)
+        }
+
+        .paper .sign {
+            text-align: right;
+            font-style: italic;
+            color: var(--ro)
+        }
+
+        .env {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            width: min(340px, 80vw);
+            aspect-ratio: 1.5;
+            background: linear-gradient(145deg, #2b1019, #170a10);
+            border: 1px solid rgba(216, 185, 138, .35);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+            cursor: pointer;
+            transition: transform .9s cubic-bezier(.2, .7, .2, 1), border-color .6s
+        }
+
+        .env:hover,
+        .env:focus-visible {
+            transform: translateY(-6px);
+            border-color: var(--go);
+            outline: none
+        }
+
+        .seal {
+            width: 44px;
+            height: 44px;
+            margin-bottom: 14px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #a8323f, var(--wi));
+            box-shadow: 0 0 0 6px rgba(100, 30, 53, .25)
+        }
+
+        .env .t {
+            font: 500 11px/1.6 var(--sa);
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--go)
+        }
+
+        .note {
+            max-width: 620px;
+            margin: 6vh auto 0;
+            padding: clamp(24px, 5vw, 48px);
+            border: 1px solid rgba(216, 185, 138, .22);
+            text-align: center;
+            animation: rise 1.2s ease both
+        }
+
+        .note p {
+            font: italic 300 clamp(1.3rem, 2.6vw, 1.9rem)/1.5 var(--se)
+        }
+
+        #final {
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(60vmax 60vmax at 50% 60%, rgba(100, 30, 53, .5), transparent 70%)
+        }
+
+        #final::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 70vmax;
+            height: 70vmax;
+            margin: -35vmax 0 0 -35vmax;
+            border-radius: 50%;
+            background: radial-gradient(closest-side, rgba(216, 185, 138, .09), transparent);
+            animation: breathe 9s ease-in-out infinite;
+            pointer-events: none
+        }
+
+        .l1 {
+            font: italic 300 clamp(1.6rem, 3.6vw, 2.8rem)/1.3 var(--se)
+        }
+
+        .l2 {
+            font: 300 clamp(1.3rem, 3vw, 2.1rem)/1.3 var(--se);
+            color: var(--ro);
+            margin: 1.2em 0 .6em
+        }
+
+        .l3 {
+            font: 300 clamp(2.2rem, 7vw, 5.4rem)/1.05 var(--se)
+        }
+
+        .msg {
+            max-width: 46ch;
+            margin: 4vh auto 0;
+            color: rgba(245, 239, 232, .78)
+        }
+
+        .end {
+            margin-top: 8vh
+        }
+
+        .end b {
+            display: block;
+            font: 500 12px/1 var(--sa);
+            letter-spacing: .4em;
+            color: var(--go)
+        }
+
+        .dt {
+            margin-top: 14px;
+            font: 300 clamp(1.1rem, 2vw, 1.3rem) var(--se);
+            letter-spacing: .3em;
+            color: var(--ro)
+        }
+
+        /* ---- Cute heart section ---- */
+        #cute {
+            background: radial-gradient(50vmax 50vmax at 50% 55%, rgba(100, 30, 53, .35), transparent 70%);
+            flex-direction: column;
+            justify-content: center;
+            text-align: center
+        }
+
+        .hpad {
+            position: relative;
+            width: min(200px, 50vw);
+            height: min(200px, 50vw);
+            margin: 6vh auto 4vh
+        }
+
+        .hbtn {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid rgba(216, 185, 138, .45);
+            background: radial-gradient(circle at 35% 30%, #7a2a44, var(--wi) 55%, var(--bu));
+            color: var(--go);
+            font: 300 clamp(3.2rem, 8vw, 4.6rem)/1 var(--se);
+            cursor: pointer;
+            box-shadow: 0 0 60px rgba(100, 30, 53, .45);
+            transition: transform .4s cubic-bezier(.2, .7, .2, 1)
+        }
+
+        .hbtn:hover,
+        .hbtn:focus-visible {
+            transform: scale(1.06);
+            outline: none
+        }
+
+        .hbtn:active {
+            transform: scale(.94)
+        }
+
+        .hz {
+            position: absolute;
+            inset: 0;
+            pointer-events: none
+        }
+
+        .fh {
+            position: absolute;
+            bottom: 50%;
+            font: 300 1.5rem/1 var(--se);
+            color: var(--ro);
+            text-shadow: 0 0 14px rgba(185, 130, 145, .6);
+            animation: fl 2.4s ease-out forwards
+        }
+
+        @keyframes fl {
+            to {
+                transform: translateY(-170px) scale(1.3);
+                opacity: 0
+            }
+        }
+
+        /* ---- New extra sections ---- */
+        #constellation {
+            background: radial-gradient(50vmax 50vmax at 50% 50%, rgba(100, 30, 53, .25), transparent 70%);
+            flex-direction: column;
+            justify-content: center;
+            text-align: center
+        }
+
+        .stars {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: clamp(18px, 4vw, 40px);
+            margin: 6vh 0;
+            font-size: 1.6rem;
+            color: var(--go);
+            opacity: .7
+        }
+
+        .stars span {
+            animation: twinkle 3s ease-in-out infinite
+        }
+
+        .stars span:nth-child(2n) {
+            animation-delay: 1s
+        }
+
+        .stars span:nth-child(3n) {
+            animation-delay: 2s
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: .3;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.3)
+            }
+        }
+
+        #promises {
+            background: linear-gradient(180deg, #0e0b11, #14080e)
+        }
+
+        .promise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: clamp(18px, 3vw, 32px);
+            margin-top: 7vh
+        }
+
+        .promise {
+            padding: 36px 28px;
+            border: 1px solid rgba(216, 185, 138, .18);
+            border-radius: 16px;
+            background: linear-gradient(170deg, rgba(53, 18, 31, .4), rgba(9, 9, 13, .6));
+            transition: border-color .6s, transform .6s
+        }
+
+        .promise:hover {
+            border-color: var(--go);
+            transform: translateY(-4px)
+        }
+
+        .promise .icon {
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+            display: block
+        }
+
+        .promise h3 {
+            font-size: clamp(1.3rem, 2.4vw, 1.6rem);
+            font-style: italic;
+            color: var(--go);
+            margin-bottom: .5em
+        }
+
+        .promise p {
+            font: 300 15px/1.75 var(--sa);
+            color: rgba(245, 239, 232, .78)
+        }
+
+        #whisper {
+            background: radial-gradient(50vmax 50vmax at 50% 40%, rgba(100, 30, 53, .3), transparent 70%);
+            flex-direction: column;
+            justify-content: center;
+            text-align: center
+        }
+
+        .whisper-line {
+            font: italic 300 clamp(1.4rem, 3vw, 2.2rem)/1.4 var(--se);
+            color: var(--iv);
+            max-width: 32ch;
+            margin: 0 auto;
+            opacity: 0;
+            animation: whisperFade 6s ease-in-out infinite
+        }
+
+        .whisper-line:nth-child(2) {
+            animation-delay: 2s
+        }
+
+        .whisper-line:nth-child(3) {
+            animation-delay: 4s
+        }
+
+        @keyframes whisperFade {
+
+            0%,
+            100% {
+                opacity: 0;
+                filter: blur(6px)
+            }
+
+            20%,
+            80% {
+                opacity: 1;
+                filter: blur(0)
+            }
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(18px) scale(.97);
+                filter: blur(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+                filter: none
+            }
+        }
+
+        @keyframes breathe {
+
+            0%,
+            100% {
+                opacity: .5
+            }
+
+            50% {
+                opacity: 1
+            }
+        }
+
+        @media (max-width:820px) {
+            .ch {
+                grid-template-columns: 1fr;
+                gap: 4vh
+            }
+
+            .ch:nth-of-type(even) .ch-img {
+                order: 0
+            }
+        }
+
+        @media (prefers-reduced-motion:reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important
+            }
+
+            .whisper-line {
+                opacity: 1 !important;
+                filter: none !important
+            }
+        }
+    </style>
+    <noscript>
+        <style>
+            #intro {
+                display: none
+            }
+
+            body.locked {
+                overflow: auto
+            }
+
+            .kp-b {
+                display: block !important
+            }
+
+            .whisper-line {
+                opacity: 1 !important;
+                filter: none !important
+            }
+        </style>
+    </noscript>
+</head>
+
+<body class="locked">
+
+    <div id="intro">
+        <div>
+            <p id="i1">Before the love story...</p>
+            <p id="i2">...there was a friendship.</p>
+            <p id="i3">Some people enter your life as friends.<br>And somehow become your whole world.</p>
+            <button id="ib" class="btn" type="button">ENTER OUR UNIVERSE</button>
+        </div>
+    </div>
+
+    <main>
+        <section id="hero">
+            <div class="wrap c">
+                <p class="date" id="dLabel" data-r></p>
+                <p class="eyebrow" data-r>The day everything changed</p>
+                <h1 class="h-big" data-r>Four Years.<br><em>A Thousand Memories.</em><br>Still You.</h1>
+                <p class="lede" data-r>From being best friends to becoming something more, you have been one of the most
+                    beautiful parts of my story.</p>
+                <div class="counter" data-r>
+                    <div><b id="cy">0</b><span>Years</span></div>
+                    <div><b id="cd">0</b><span>Days</span></div>
+                    <div><b id="ch">00</b><span>Hours</span></div>
+                    <div><b id="cm">00</b><span>Minutes</span></div>
+                    <div><b id="cs">00</b><span>Seconds</span></div>
+                </div>
+                <p class="small" id="nx"></p>
+                <p class="small" id="names"></p>
+            </div>
+        </section>
+
+        <section id="friend">
+            <div class="shift" aria-hidden="true"></div>
+            <div class="wrap">
+                <h2 id="hf">Before You Were My Love...</h2>
+                <p class="big" data-r>You were my <em>best friend.</em></p>
+                <div id="fr"></div>
+            </div>
+        </section>
+
+        <section id="moment">
+            <div class="wrap c">
+                <p class="m-date" id="mdate" data-r></p>
+                <p class="m-line" id="mline" data-r></p>
+            </div>
+        </section>
+
+        
+
+        <section id="keepsakes">
+            <div class="wrap c">
+                <p class="eyebrow" data-r>Little keepsakes</p>
+                <h2 data-r>Tiny Things<br><em>We Keep</em></h2>
+                <p class="lede" data-r>Tap a card to open a little piece of us.</p>
+                <div class="keep" id="keep"></div>
+                <p class="kp-hint" id="kphint" data-r></p>
+            </div>
+        </section>
+
+        <!-- NEW: Cute heart section -->
+        <section id="cute">
+            <div class="wrap c">
+                <p class="eyebrow" data-r>Just a little something</p>
+                <h2 data-r>Send a <em>little heart</em></h2>
+                <div class="hpad" data-r>
+                    <div class="hz" id="hz" aria-hidden="true"></div>
+                    <button class="hbtn" id="hb" type="button" aria-label="Send a little heart">♥</button>
+                </div>
+                <p class="small" id="hc"></p>
+                <p class="small" id="hnote"></p>
+            </div>
+        </section>
+
+        <!-- NEW: Constellation of us -->
+        <section id="constellation">
+            <div class="wrap c">
+                <p class="eyebrow" data-r>Written in the stars</p>
+                <h2 data-r>Our Little <em>Constellation</em></h2>
+                <div class="stars" data-r aria-hidden="true">
+                    <span>✦</span><span>✧</span><span>✦</span><span>✧</span><span>✦</span><span>✧</span><span>✦</span>
+                </div>
+                <p class="lede" data-r>Every star up there has watched us grow. If you ever feel lost, just look up —
+                    somewhere in that sky, there's a little constellation that looks a lot like us.</p>
+            </div>
+        </section>
+
+        <!-- NEW: Promises section -->
+        <section id="promises">
+            <div class="wrap">
+                <p class="eyebrow" data-r>Quiet promises</p>
+                <h2 data-r>Little Promises<br><em>I Keep</em></h2>
+                <div class="promise-grid">
+                    <div class="promise" data-r>
+                        <span class="icon">🌙</span>
+                        <h3>To listen</h3>
+                        <p>Not just to your words, but to the silences in between. To be the person you can always come
+                            back to.</p>
+                    </div>
+                    <div class="promise" data-r>
+                        <span class="icon">🫶🏻</span>
+                        <h3>To choose you</h3>
+                        <p>In the loud moments and the quiet ones. On the easy days and the ones that ask more of us.
+                        </p>
+                    </div>
+                    <div class="promise" data-r>
+                        <span class="icon">🌷</span>
+                        <h3>To keep laughing</h3>
+                        <p>At our silly jokes, at ourselves, at the little things. To never let the laughter fade.</p>
+                    </div>
+                    <div class="promise" data-r>
+                        <span class="icon">✨</span>
+                        <h3>To grow with you</h3>
+                        <p>Not just beside you, but with you. To keep becoming better, together, one small step at a
+                            time.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Whisper section -->
+        <section id="whisper">
+            <div class="wrap c">
+                <p class="whisper-line" data-r>You are my favorite hello...</p>
+                <p class="whisper-line" data-r>...and my hardest goodbye.</p>
+                <p class="whisper-line" data-r>But mostly, you're my always.</p>
+            </div>
+        </section>
+
+        <section id="letter">
+            <div class="wrap">
+                <h2 data-r>Things I Never Want You to Forget</h2>
+                <article class="paper" data-r>
+                    <p class="open">To the person who was my best friend before becoming my favorite person...</p>
+                    <div id="lbody"></div>
+                    <p class="sign" id="lsign"></p>
+                </article>
+            </div>
+        </section>
+
+        <section id="secret">
+            <div class="wrap c">
+                <p class="eyebrow" data-r>A little secret</p>
+                <button id="env" class="env" type="button" aria-expanded="false" aria-controls="note"><span class="seal"
+                        aria-hidden="true"></span><span class="t" id="envl"></span></button>
+                <div id="note" class="note" hidden>
+                    <p id="notet"></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="final">
+            <div class="wrap c">
+                <p class="l1" data-f>Four years ago, you became more than my best friend.</p>
+                <p class="l2" data-f>And somehow, after all this time...</p>
+                <p class="l3" data-f>You're still the person I'd choose.</p>
+                <p class="msg" id="fmsg" data-f></p>
+                <div class="end" data-f><b>HAPPY 4TH ANNIVERSARY</b>
+                    <p class="dt" id="fdt"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+        /* ===================== CONFIG: edit everything personal here ===================== */
+        const CONFIG = {
+            names: { you: "Saaaadddd", partner: "Nahaaaawwwwwl" },
+            dates: {
+                start: "2022-10-21T00:00:00",   // the anniversary start, read in local time
+                label: "21 · 10 · 2022",
+                long: "21 OCTOBER 2022",
+                final: "21.10.2026"
+            },
+            moment: "Somewhere between friendship and forever, everything changed.",
+            friendship: [
+                { k: "The conversations", v: "It's funny how a simple conversation with your best friend can become something so precious. If I could go back, I'd sit through all those little talks again, laugh at the same silly jokes, and stay in those moments a little longer. Because little did I know, my favorite person to talk to as a friend would one day become my favorite person to love. 🫶🏻✨" },
+                { k: "The jokes only we understood", v: "It started with the silliest little thing, and somehow became our thing 😂💕 Now, one tiny word or look is enough to make us laugh like two little idiots. Nobody else would understand why it's so funny, but that's the magic of us  our own little world, filled with jokes that never get old. 🥹🫶🏻" },
+                { k: "The moments that brought us closer", v: "It's the little moments that make all the difference. Whether it's sharing a laugh, offering a listening ear, or simply being there when it matters most, these are the moments that have brought us closer together." },
+                { k: "The little things", v: "It's not the grand gestures that define our friendship, but the little things. The way you always remember what I like, the way you make me laugh even on my worst days, and the way we can just be ourselves around each other without any pretense." },
+                { k: "The moment things started feeling different", v: "It was in that quiet moment, when everything seemed to click into place, that I realized something had shifted. The bond we shared was no longer just friendship—it was something deeper, something more meaningful." }
+            ],
+            keepsakes: [
+                { e: "🧸", t: "Our inside jokes", b: "One look is enough and we're gone. Nobody else gets it, and that's exactly why it's ours." },
+                { e: "🌙", t: "Late night talks", b: "The hours that slipped by without us noticing, talking about everything and nothing at all." },
+                { e: "☕", t: "Little routines", b: "The small everyday things that make ordinary days feel warm and a little more ours." },
+                { e: "🎧", t: "Songs that remind me of you", b: "Every time one comes on, you're in my head before I even realize it." },
+                { e: "🌷", t: "Your little habits", b: "The way you laugh, the way you make a room feel softer, the way you feel like home." },
+                { e: "🗝️", t: "Promises I'm keeping", b: "To keep choosing you, in the small moments and the big ones, every single day." }
+            ],
+            keepsakeHint: "Tap a card to open it · tap again to close",
+            cute: { note: "Tap as many as you like. Every single one is for you." },
+            letter: {
+                body: [
+                    "What I love about you 💗\n\nI love how you can make me smile without even trying, how your smallest little habits become my favorite things, and how you feel like home to me. You're not just the person I love; you're my favorite person and my best friend. 🥹❤️",
+                    "What makes us unique 🫶🏻\n\nWe didn't just fall in love; we were best friends first. We have our own little world, our silly jokes, random conversations, and tiny moments nobody else would understand. And honestly, that's what makes us so special. 🥹💕",
+                    "What I remember about our friendship 🌷\n\nRemember our silly talks, endless teasing, and laughing over the tiniest things? Little did I know that my favorite person to talk to would become my favorite person to love. If I could go back, I'd choose you as my best friend all over again. 🧸💗",
+                    "What these four years mean to me ✨\n\nFour years of us, of laughter, memories, growing together, and collecting little moments I'll always cherish. Since 21 October 2022, you've become such a beautiful part of my life, and I wouldn't trade our story for anything. ❤️‍🩹",
+                    "What I hope for our future 🌙\n\nI hope we keep choosing each other, laughing at our stupid jokes, annoying each other, and finding new reasons to fall in love. Years from now, I hope we're still best friends, still silly together, and still each other's favorite people. No matter what life brings, I hope it's always you and me. Forever my favorite human. ♾️❤️"
+                ]
+            },
+            secret: {
+                label: "A tiny secret, just for you 💌 · tap to open",
+                note: "If I could give you one thing in life, I'd give you the ability to see yourself through my eyes. Maybe then you'd understand just how special you are to me, how much happiness you bring into my life, and why, out of all the people in this world, you're the one my heart keeps choosing. You were my best friend before you became my love, and you'll always be my favorite part of this story. I love you more than these little words could ever explain. 🥹❤️"
+            },
+            final: {
+                msg: "Happy 4th Anniversary, my favorite human. ❤️ Four years ago, on 21 October 2022, our story became something more than friendship. If I could go back and live it all over again, I'd find my way to you every single time. Here's to all the memories we've made, all the silly moments still waiting for us, and a future where we never stop being best friends. Four years down, forever to go. I love you, always and in all ways. ♾️💕"
+            }
+        };
+
+        /* ============================== SITE LOGIC ============================== */
+        (() => {
+            const $ = s => document.querySelector(s);
+            const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+            const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+            const G = window.gsap && !RM ? window.gsap : null;
+
+            // Fill personal text from CONFIG
+            $("#dLabel").textContent = CONFIG.dates.label;
+            $("#names").textContent = `${CONFIG.names.you} & ${CONFIG.names.partner}`;
+            $("#mdate").textContent = CONFIG.dates.long;
+            $("#mline").textContent = CONFIG.moment;
+            $("#envl").textContent = CONFIG.secret.label;
+            $("#notet").textContent = CONFIG.secret.note;
+            $("#fmsg").textContent = CONFIG.final.msg;
+            $("#fdt").textContent = CONFIG.dates.final;
+            $("#lsign").textContent = `— ${CONFIG.names.you}`;
+            $("#lbody").innerHTML = CONFIG.letter.body.map(p => `<p>${esc(p)}</p>`).join("");
+            $("#fr").innerHTML = CONFIG.friendship.map(f => `<div class="fr" data-r><h3>${esc(f.k)}</h3><p>${esc(f.v)}</p></div>`).join("");
+
+
+
+            // Keepsake cards: tap to open / close
+            $("#keep").innerHTML = CONFIG.keepsakes.map(k => `<button class="kp" type="button" aria-expanded="false" data-r>
+    <span class="kp-h"><span class="kp-e" aria-hidden="true">${esc(k.e)}</span><span class="kp-t">${esc(k.t)}</span></span>
+    <span class="kp-b">${esc(k.b)}</span>
+  </button>`).join("");
+            $("#kphint").textContent = CONFIG.keepsakeHint;
+            $("#keep").onclick = e => {
+                const card = e.target.closest(".kp");
+                if (!card) return;
+                const open = !card.classList.contains("open");
+                card.classList.toggle("open", open);
+                card.setAttribute("aria-expanded", String(open));
+            };
+
+            // Little hearts: each tap sends one floating heart and counts it
+            const hb = $("#hb"), hz = $("#hz");
+            let sent = 0;
+            const showCount = () => { $("#hc").textContent = `Hearts sent: ${sent}`; };
+            $("#hnote").textContent = CONFIG.cute.note;
+            showCount();
+            hb.onclick = () => {
+                sent += 1;
+                showCount();
+                if (RM) return;
+                const f = document.createElement("span");
+                f.className = "fh";
+                f.textContent = "♥";
+                f.style.left = `${30 + Math.random() * 40}%`;
+                f.onanimationend = () => f.remove();
+                hz.appendChild(f);
+            };
+
+            // Live counter: time since the start date, plus the countdown to the next anniversary
+            const start = new Date(CONFIG.dates.start);
+            const plusYears = (d, n) => { const x = new Date(d); x.setFullYear(d.getFullYear() + n); return x; };
+            const two = n => String(n).padStart(2, "0");
+            const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+            function tick() {
+                const now = new Date();
+                let y = now.getFullYear() - start.getFullYear();
+                if (plusYears(start, y) > now) y -= 1;
+                const last = plusYears(start, y), next = plusYears(start, y + 1);
+                const s = Math.floor((now - last) / 1000);
+                $("#cy").textContent = y;
+                $("#cd").textContent = Math.floor(s / 86400);
+                $("#ch").textContent = two(Math.floor((s % 86400) / 3600));
+                $("#cm").textContent = two(Math.floor((s % 3600) / 60));
+                $("#cs").textContent = two(s % 60);
+                const u = Math.floor((next - now) / 1000), d = Math.floor(u / 86400), h = Math.floor((u % 86400) / 3600);
+                $("#nx").textContent = `Counting from ${CONFIG.dates.label}. The next anniversary arrives in ${d ? plural(d, "day") + " and " : ""}${plural(h, "hour")}.`;
+            }
+            tick();
+            setInterval(tick, 1000);
+
+            // Intro overlay
+            const intro = $("#intro");
+            const unlock = () => { intro.remove(); document.body.classList.remove("locked"); };
+            if (G) {
+                G.timeline({ delay: 0.3 })
+                    .from("#i1", { opacity: 0, y: 14, duration: 1.6, ease: "power3.out" })
+                    .from("#i2", { opacity: 0, y: 18, filter: "blur(10px)", duration: 1.8, ease: "power3.out" }, "+=1.2")
+                    .from("#i3", { opacity: 0, duration: 1.6 }, "+=1.1")
+                    .from("#ib", { opacity: 0, duration: 1 }, "+=0.4");
+            }
+            $("#ib").onclick = () => (G ? G.to(intro, { opacity: 0, filter: "blur(14px)", duration: 1.6, ease: "power2.inOut", onComplete: unlock }) : unlock());
+
+            // Sealed envelope
+            const env = $("#env"), note = $("#note");
+            env.onclick = () => {
+                const open = env.getAttribute("aria-expanded") !== "true";
+                env.setAttribute("aria-expanded", String(open));
+                note.hidden = !open;
+            };
+
+            // Motion (skipped under reduced-motion; content stays fully visible)
+            if (G && window.ScrollTrigger) {
+                G.registerPlugin(ScrollTrigger);
+                const hf = $("#hf");
+                hf.innerHTML = hf.textContent.trim().split(/\s+/).map(w => `<span class="w">${esc(w)}</span>`).join(" ");
+                G.from("#hf .w", { opacity: 0, y: 26, filter: "blur(6px)", stagger: 0.08, duration: 1.4, ease: "power3.out", scrollTrigger: { trigger: "#friend", start: "top 60%" } });
+                G.fromTo(".shift", { opacity: 0 }, { opacity: 1, ease: "none", scrollTrigger: { trigger: "#friend", start: "top top", end: "bottom 60%", scrub: true } });
+                G.utils.toArray("[data-r]").forEach(el => G.from(el, { opacity: 0, y: 40, filter: "blur(4px)", duration: 1.6, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 88%" } }));
+                G.from(".kp", { y: 30, rotate: -2, opacity: 0, duration: 1.2, stagger: 0.12, ease: "power3.out", scrollTrigger: { trigger: "#keep", start: "top 80%" } });
+                G.from("[data-f]", { opacity: 0, y: 24, filter: "blur(8px)", duration: 1.8, stagger: 1.2, ease: "power2.out", scrollTrigger: { trigger: "#final", start: "top 65%" } });
+            }
+        })();
+    </script>
+</body>
+
+</html>
